@@ -24,9 +24,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         mContext = getApplicationContext();
         filesFromDirList = new ArrayList<>();
-//        File musicDir = new File(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString());
-//
-//        Log.d("###", MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString());
 
         getCursorForAudio();
 
