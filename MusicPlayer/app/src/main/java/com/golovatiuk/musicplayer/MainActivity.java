@@ -1,6 +1,7 @@
 package com.golovatiuk.musicplayer;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,11 +13,13 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
     private ListView mListView;
     private ArrayList<String> filesFromDirList;
     private Context mContext;
+    private MusicListFragment musicListFragment;
+    private PlayerFragment playerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +33,13 @@ public class MainActivity extends Activity {
         mListView = (ListView) findViewById(R.id.listView);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, R.layout.item, filesFromDirList);
         mListView.setAdapter(adapter);
-        mListView.setDividerHeight(5);
+
+        musicListFragment = new MusicListFragment();
+        playerFragment = new PlayerFragment();
+        FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
+        fTrans.add(R.id.music_list_fragment, musicListFragment);
+        fTrans.add(R.id.player_fragment, playerFragment);
+        fTrans.commit();
     }
 
 //    private void getAllFilesOfDir(File directory) {
@@ -60,17 +69,14 @@ public class MainActivity extends Activity {
         Cursor cur = cr.query(uri, null, selection, null, sortOrder);
         int count = 0;
 
-        if(cur != null)
-        {
+        if (cur != null) {
             count = cur.getCount();
 
-            if(count > 0)
-            {
-                while(cur.moveToNext())
-                {
+            if (count > 0) {
+                while (cur.moveToNext()) {
                     String file = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
                     if (file.endsWith(".mp3")) {
-                        filesFromDirList.add(file);
+                        filesFromDirList.add(file.substring(file.lastIndexOf("/") + 1));
                     }
                 }
             }
